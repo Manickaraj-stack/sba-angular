@@ -1,59 +1,109 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { appService } from '../service/index';
+import { NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
+declare var jQuery: any;
 
 @Component({
   selector: 'app-addproject',
   templateUrl: './addproject.component.html',
   styleUrls: ['./addproject.component.css']
 })
-export class AddprojectComponent implements OnInit {
+export class AddprojectComponent implements OnInit, OnDestroy {
+
+  addModalHeading : string = '';
+  addModalBody : string = '';
 
   modalHeading : string = '';
-  modalBody : string = '';
-  task : any = {};
+  project : any = {};
   users: any = [];
+  allprojects: any = [];
+  flow = 'addproject';
+  selectedProjectObj: any = {};
 
-  constructor() {
-    //this.modalHeading = "Users/managers";
-    //this.modalBody = "list will be update soon";  
-   }
+  hoveredDate: NgbDate;
+  fromDate: NgbDate;
+  toDate: NgbDate;
+  calendarToday: NgbCalendar;  
 
-  ngOnInit() {
+  constructor(calendar: NgbCalendar, config: NgbDatepickerConfig, public appService : appService) {    
+    this.calendarToday = calendar;
+
+   if (this.flow === 'addproject') {
+      this.project = {
+        ProjectName:'',
+        IsSetdate:'',
+        StartDate: new Date(),
+        EndDate: new Date(),
+        ProjectPriority: '10',
+        //ID: ''
+      };
+      this.fromDate = calendar.getToday();
+      this.toDate = calendar.getNext(calendar.getToday(), 'd', 10);
+    }
+
+  }
+
+  addproject(project: any){
+    if(this.flow === 'addproject'){
+        var saveAddProject = {};
+        //if(this.project.parentTaskId === '' || this.project.parentTaskId === null || this.project.parentTaskId === undefined){
+          saveAddProject = {
+            "ProjectName": this.project.ProjectName,
+            "IsSetdate": true,
+            "StartDate": this.convertDateJsonToString(this.fromDate),
+            "EndDate": this.convertDateJsonToString(this.toDate),
+            "ProjectPriority": this.project.ProjectPriority,
+            "ID": this.project.ID
+          };
+
+          this.appService.addProject(saveAddProject).subscribe(
+          (data: any) => {
+             this.addModalHeading = 'Yeah :-)';
+             this.addModalBody = 'Project Added Successfully';
+             //document.getElementById("submitModalOpener").click();
+          },
+          (err: any) => {
+              this.addModalHeading = 'Oh No !!!';
+              this.addModalBody = 'Unexpected error occured during Add Project. Please try after some time.';
+              //document.getElementById("submitModalOpener").click();        
+            }
+          );
+    }
+  }
+
+  ngOnInit() {    
+  }
+
+  ngOnDestroy() {
+    this.project = {};
+  }
+
+  getselectedvalue(event, user: any){
+      var value = event.target.textContent;
+      jQuery("#projectmanager").val(value);
+      this.project.ID = user.ID;
   }
 
   openmodal(){
-    this.modalHeading = "Users/managers";
-    this.modalBody = "Users/managers list";
-
-    this.users = [{
-      id: 1,
-      name: "john"
-    },
-    {
-      id: 2,
-      name: "matt"
-    },
-    {
-      id: 3,
-      name: "jessy"
-    }]
+    this.modalHeading = "Users list";
+    this.appService.getUsers().subscribe(
+      (data: any) => {
+        this.users = data;
+      });    
   };
-
-  // jquery("#searchmodal").on("hidden.bs.modal", function(e){
-  //   var value = this.jquery("#myPopupInput").val();
-  //   this.jquery("#myMainPageInput").val(value);
-  // });
 
   onDateSelectPicker(date: NgbDate, field: string){
     if(field === 'start'){
-      //this.task.startDate = this.convertDateJsonToString(this.task.startDate);
+      this.project.StartDate = this.convertDateJsonToString(this.project.StartDate);
       setTimeout(()=>{
-        //jQuery("#startDate").val(this.task.startDate);
+      jQuery("#startDate").val(this.project.StartDate);
       },50);
     }else if(field === 'end'){
-      //this.task.endDate = this.convertDateJsonToString(this.task.endDate);
+      this.project.EndDate = this.convertDateJsonToString(this.project.EndDate);
       setTimeout(()=>{
-        //jQuery("#endDate").val(this.task.endDate);
+      jQuery("#endDate").val(this.project.EndDate);
       },50);
     }
   }
@@ -64,4 +114,17 @@ export class AddprojectComponent implements OnInit {
     }
   }
 
+  reset(){
+    this.project = {
+      "ProjectName":"",
+      "IsSetdate":"",
+      "StartDate": new Date(),
+      "EndDate": new Date(),
+      "ProjectPriority": '10',
+      "ID": ""
+    };
+    jQuery("#startDate").val("");
+    jQuery("#endDate").val("");
+    jQuery("#projectmanager").val("");
+}
 }
