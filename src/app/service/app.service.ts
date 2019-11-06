@@ -57,14 +57,30 @@ export class appService {
         return Observable.throw(errMsg);
     }
 
-    getUSers(): Observable<any> {
-        const headers = new Headers({ 'Accept': '*/*', 'Content-Type': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
-        return this.http.get(`${Config.API}/api/users`, options)
-            .map(res => res.json())
-            .catch(this.handleErrorNoChange.bind(this))
+    getUSers(): Observable<string[]> {
+        let headers = new Headers({ 'Accept': '*/*', 'Content-Type':'application/json'});
+        let options = new RequestOptions({ headers: headers });
+        return this.http.get(Config.API+ "/api/Users", options)
+                        .map((res: Response) => res.json())
+                        .catch(this.handleErrorNoChange.bind(this));
     }
 
+    addProject(inputParam : {}): Observable<string[]> {
+        let headers = new Headers({ 'Accept': '*/*', 'Content-Type':'application/json' });
+        let options = new RequestOptions({ headers: headers });
+        return this.http.post(Config.API+ "/api/Projects", inputParam, options)
+                        .map((res: Response) => res.json())
+                        .catch(this.handleErrorNoChange.bind(this));
+    }
+
+    getProjects(): Observable<string[]> {
+        let headers = new Headers({ 'Accept': '*/*', 'Content-Type':'application/json'});
+        let options = new RequestOptions({ headers: headers });
+        return this.http.get(Config.API+ "/api/Projects", options)
+                        .map((res: Response) => res.json())
+                        .catch(this.handleErrorNoChange.bind(this));
+    }
+    
     addUser(user: User) {
         const headers = new Headers({ 'Accept': '*/*', 'Content-Type': 'application/json' });
         const options = new RequestOptions({ headers: headers });
