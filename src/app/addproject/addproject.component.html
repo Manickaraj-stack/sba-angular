@@ -129,7 +129,7 @@
         <form #viewprojectForm="ngForm" method="get" novalidate >
             <div class="form-group row">
                 <input type="text" class="form-control" id="projectName" maxlength="50" name="projectName" 
-                    #projectName="ngModel" [(ngModel)]="project.taskName" placeholder="Search...">
+                    #projectName="ngModel" [(ngModel)]="project.ProjectName" placeholder="Search...">
             </div>
 
             <div class="form-group row">
@@ -140,30 +140,30 @@
                 <button type="submit" class="btn mx-3" >Completed</button>
             </div>
 
-            <div *ngFor="let project of allprojects">
-                <div class="row mb-4">
+            <div>
+                <div *ngFor="let item of allprojects" class="row mb-4">
                     <div class="col-sm-8">
                         <div class="row customBg mr-1">
                             <div class="col-sm-12">
-                                <label for="Project" class="col-sm-2 col-form-label">Project:{{project.ProjectName}}</label>
+                                <label for="Project" class="col-sm-2 col-form-label">Project:{{item.ProjectName}}</label>
                             </div>
                             <div class="col-sm-6">
                                 <label for="No of tasks" class="col-sm-12 col-form-label">No of tasks:</label>
-                                <label for="Start date" class="col-sm-12 col-form-label">Start date:{{project.StartDate}}</label>
+                                <label for="Start date" class="col-sm-12 col-form-label">Start date:{{item.StartDate}}</label>
                             </div>
                             <div class="col-sm-6">
                                 <label for="Completed" class="col-sm-12 col-form-label">Completed:</label>
-                                <label for="End date" class="col-sm-12 col-form-label">End date:{{project.EndDate}}</label>
+                                <label for="End date" class="col-sm-12 col-form-label">End date:{{item.EndDate}}</label>
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-2">
                         <div class="row customBg">
-                            <label for="Priority" class="col-sm-12 col-form-label">Priority:{{project.ProjectPriority}}</label>
+                            <label for="Priority" class="col-sm-12 col-form-label">Priority:{{item.ProjectPriority}}</label>
                         </div>
                     </div>
                     <div class="col-sm-2">
-                        <button type="submit" class="btn mb-4" >Update</button>
+                        <button type="submit" (click)=updateProject(item) class="btn mb-4" >Update</button>
                         <button type="submit" class="btn mb-2" >Suspend</button>
                     </div>
                 </div>
