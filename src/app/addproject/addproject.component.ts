@@ -43,6 +43,10 @@ export class AddprojectComponent implements OnInit, OnDestroy {
       this.toDate = calendar.getNext(calendar.getToday(), 'd', 10);
     }
 
+    this.appService.getProjects().subscribe(
+      (data: any) => {
+        this.allprojects = data;
+      });
   }
 
   addproject(project: any){
@@ -73,11 +77,22 @@ export class AddprojectComponent implements OnInit, OnDestroy {
     }
   }
 
+  updateProject(project: any){
+    this.project = {
+        ProjectName: project.ProjectName,
+        IsSetdate:project.IsSetdate,
+        StartDate: project.StartDate,
+        EndDate: project.EndDate,
+        ProjectPriority: project.ProjectPriority,
+        //ID: ''
+      };      
+  }
+
   ngOnInit() {    
   }
 
   ngOnDestroy() {
-    this.project = {};
+    //this.project = {};
   }
 
   getselectedvalue(event, user: any){
@@ -88,7 +103,7 @@ export class AddprojectComponent implements OnInit, OnDestroy {
 
   openmodal(){
     this.modalHeading = "Users list";
-    this.appService.getUsers().subscribe(
+    this.appService.getUSers().subscribe(
       (data: any) => {
         this.users = data;
       });    
