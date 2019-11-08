@@ -81,6 +81,17 @@ export class UpdateTaskComponent implements OnInit, OnDestroy {
     });
   }
 
+  IsparentTask(task: any){
+    this.task = {
+        IsParentTask: task.IsParentTask,
+        TaskPriority: '15',
+        ParentId: '',
+        StartDate: new Date(),
+        EndDate: new Date(),
+        UserId:''
+      };
+  }
+
   ngOnInit() {
     
   }
