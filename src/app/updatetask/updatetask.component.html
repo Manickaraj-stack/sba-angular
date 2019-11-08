@@ -4,8 +4,10 @@
             <form #updateTaskForm="ngForm" method="post" (ngSubmit)="updateTask(task)" novalidate >
                 <div class="form-group row">
                     <label for="taskName" class="col-sm-2 col-form-label">Project</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="project" maxlength="50" required name="taskName" #projectName="ngModel" [(ngModel)]="task.projectName" placeholder="Enter the project name">
+                    <div class="col-sm-10" style="display: inline-flex;">
+                        <input type="text" class="form-control" [disabled]="(task.IsParentTask)" style="display: inline-block;" id="project" maxlength="50" required name="taskName" #projectName="ngModel" [(ngModel)]="task.projectName" placeholder="Select a project">
+                        <button type="button" [disabled]="(task.IsParentTask)" class="btn btn-success ml-2" data-toggle="modal" 
+                                (click)=selectproject() data-target="#searchmodal">Select</button>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -15,10 +17,17 @@
                     </div>
                 </div>
                 <div class="form-group row">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-10">
+                        <input id="setparenttask" type="checkbox" (change)="IsparentTask(task)" #isparent="ngModel" name="setparenttask" [(ngModel)]="task.IsParentTask"/>
+                        <label for="setparenttask" class="pl-1">Parent Task </label>
+                    </div>
+                </div>
+                <div class="form-group row">
                     <label for="priority" class="col-sm-2 col-form-label">Priority</label>
                     <div class="col-sm-9">
                         <div class="pt-2">
-                                <input type="range" min="1" max="30" name="priority" #priority="ngModel" [(ngModel)]="task.priority" class="slider" id="priority">
+                                <input type="range" [disabled]="(task.IsParentTask)" min="1" max="30" name="priority" #priority="ngModel" [(ngModel)]="task.priority" class="slider" id="priority">
                         </div>
                     </div>
                     <div class="col-sm-1">
@@ -29,10 +38,12 @@
                 </div>
                 <div class="form-group row">
                     <label for="parentTask" class="col-sm-2 col-form-label">Parent Task</label>
-                    <div class="col-sm-10">
-                        <input id="parentTask" type="text" class="form-control" name="parentTaskId" [ngbTypeahead]="parentTaskSearch" [ngModel]="task.parentTaskName"
+                    <div class="col-sm-10" style="display: inline-flex;">
+                        <input id="parentTask" type="text" [disabled]="(task.IsParentTask)" class="form-control" name="parentTaskId" [ngbTypeahead]="parentTaskSearch" [ngModel]="task.parentTaskName"
                         (focus)="focus$.next($event.target.value)" (click)="click$.next($event.target.value)" [resultFormatter]="formatter" 
                          (selectItem)="selectedParentTaskItem($event)" (keydown)=clearParentId($event) #instance="ngbTypeahead" placeholder="Select a Parent Task"/>
+                         <button type="button" class="btn btn-success ml-2" [disabled]="(task.IsParentTask)" data-toggle="modal" 
+                                (click)=selectparenttask() data-target="#searchmodal">Select</button>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -57,8 +68,10 @@
                 </div>
                 <div class="form-group row">
                         <label for="taskName" class="col-sm-2 col-form-label">User</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="project" maxlength="50" required name="user" #projectName="ngModel" [(ngModel)]="task.user" placeholder="User">
+                        <div class="col-sm-10" style="display: inline-flex;">
+                            <input type="text" class="form-control" [disabled]="(task.IsParentTask)" id="project" maxlength="50" required name="user" #projectName="ngModel" [(ngModel)]="task.user" placeholder="Select a user">
+                            <button type="button" class="btn btn-success ml-2" data-toggle="modal" 
+                                (click)=selectuser() [disabled]="(task.IsParentTask)" data-target="#searchmodal">Select</button>
                         </div>
                     </div>
                 <div class="form-group row">
